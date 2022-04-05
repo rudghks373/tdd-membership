@@ -1,14 +1,13 @@
 package com.study.tddmembership.membership.repository;
 
 import com.study.tddmembership.membership.domain.Membership;
-import com.study.tddmembership.membership.repository.MembershipRepository;
 import com.study.tddmembership.membership.type.MembershipType;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author 공통플랫폼팀 오경환
@@ -18,20 +17,20 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
  * @since 2022.04.05
  */
 @DataJpaTest
-public class MembershipRepositoryTest {
+class MembershipRepositoryTest {
 
   @Autowired
   private MembershipRepository membershipRepository;
 
   @Test
   @DisplayName("MembershipRepository null이 아니다")
-  public void MembershipRepositoryNotNull() {
+  void MembershipRepositoryNotNull() {
     assertThat(membershipRepository).isNotNull();
   }
 
   @Test
   @DisplayName("멤버십 등록 테스트")
-  public void membershipAdd() {
+  void membershipAdd() {
 
     // given
     final Membership membership =
@@ -52,7 +51,7 @@ public class MembershipRepositoryTest {
   }
 
   @Test
-  public void 멤버십이존재하는지테스트() {
+  void 멤버십이존재하는지테스트() {
     // given
     final Membership membership = Membership.builder()
         .userId("userId")
