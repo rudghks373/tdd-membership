@@ -51,7 +51,8 @@ class MembershipRepositoryTest {
   }
 
   @Test
-  void 멤버십이존재하는지테스트() {
+  @DisplayName("멤버십이 존재하는지 테스트")
+  void membershipIsNotNull() {
     // given
     final Membership membership = Membership.builder()
         .userId("userId")
