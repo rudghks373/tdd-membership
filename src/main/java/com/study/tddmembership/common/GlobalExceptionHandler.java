@@ -1,4 +1,4 @@
-package com.study.tddmembership.membership.controller;
+package com.study.tddmembership.common;
 
 import com.study.tddmembership.membership.exception.MembershipErrorResult;
 import com.study.tddmembership.membership.exception.MembershipException;

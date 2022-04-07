@@ -1,4 +1,4 @@
-package com.study.tddmembership.membership.controller;
+package com.study.tddmembership.membership.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

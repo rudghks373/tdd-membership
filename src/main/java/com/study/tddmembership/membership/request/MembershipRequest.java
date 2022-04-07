@@ -1,4 +1,4 @@
-package com.study.tddmembership.membership.controller;
+package com.study.tddmembership.membership.request;
 
 import com.study.tddmembership.membership.type.MembershipType;
 import javax.validation.constraints.Min;

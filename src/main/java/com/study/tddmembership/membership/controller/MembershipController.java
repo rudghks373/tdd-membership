@@ -1,6 +1,7 @@
 package com.study.tddmembership.membership.controller;
 
-import static com.study.tddmembership.membership.controller.MembershipConstants.USER_ID_HEADER;
+import com.study.tddmembership.membership.constants.MembershipConstants;
+import com.study.tddmembership.membership.request.MembershipRequest;
 import com.study.tddmembership.membership.response.MembershipResponse;
 import com.study.tddmembership.membership.service.MembershipService;
 import javax.validation.Valid;
@@ -20,7 +21,7 @@ public class MembershipController {
 
   @PostMapping("/api/v1/memberships")
   public ResponseEntity<MembershipResponse> addMembership(
-      @RequestHeader(USER_ID_HEADER) final String userId,
+      @RequestHeader(MembershipConstants.USER_ID_HEADER) final String userId,
       @RequestBody @Valid final MembershipRequest membershipRequest) {
 
     final MembershipResponse membershipResponse =
