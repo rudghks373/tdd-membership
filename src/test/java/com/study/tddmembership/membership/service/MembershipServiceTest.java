@@ -6,18 +6,18 @@ import com.study.tddmembership.membership.exception.MembershipException;
 import com.study.tddmembership.membership.repository.MembershipRepository;
 import com.study.tddmembership.membership.response.MembershipResponse;
 import com.study.tddmembership.membership.type.MembershipType;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class MembershipServiceTest {
@@ -30,8 +30,11 @@ class MembershipServiceTest {
 
   @Mock private MembershipRepository membershipRepository;
 
+  @Mock private MembershipService memberService;
+
   @Test
-  void 맴버쉽등록실패_이미존재함() {
+  @DisplayName("맴버쉽등록실패_이미존재함")
+  void memberAddFailDuplication() {
     // given
     doReturn(Membership.builder().build())
         .when(membershipRepository)
@@ -46,7 +49,8 @@ class MembershipServiceTest {
   }
 
   @Test
-  void 멤버쉽등록성공() {
+  @DisplayName("멤버쉽등록성공")
+  void membershipAddSuccess() {
     // given
     doReturn(null).when(membershipRepository).findByUserIdAndMembershipType(userId, membershipType);
     doReturn(membership()).when(membershipRepository).save(any(Membership.class));
@@ -55,7 +59,7 @@ class MembershipServiceTest {
 
     final MembershipResponse result = target.addMembership(userId, membershipType, point);
 
-    // tehn
+    // then
     assertThat(result.getId()).isNotNull();
     assertThat(result.getMembershipType()).isEqualTo(MembershipType.NAVER);
 
