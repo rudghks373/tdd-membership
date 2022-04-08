@@ -112,6 +112,25 @@ class MembershipControllerTest {
     resultActions.andExpect(status().isOk());
   }
 
+  @Test
+  @DisplayName("멤버십상세 조회성공")
+  void membershipSearchDetailSuccess() throws Exception {
+    // given
+    final String url = "/api/v1/memberships/123";
+    doReturn(MembershipDetailResponse.builder().build())
+        .when(membershipService).getMembership(123L,"12345");
+
+    // then
+    final ResultActions resultActions = mockMvc.perform(
+        MockMvcRequestBuilders.get(url)
+            .header(USER_ID_HEADER,"12345")
+    );
+
+    // then
+    resultActions.andExpect(status().isOk());
+
+  }
+
   @ParameterizedTest
   @MethodSource("invalidMembershipAddParameter")
   @DisplayName("멤버십등록실패 잘못된파라미터")
@@ -170,4 +189,25 @@ class MembershipControllerTest {
     // then
     resultActions.andExpect(status().isBadRequest());
   }
+
+  @Test
+  @DisplayName("멤버십상세조회실패 멤버십이 존재하지않음")
+  void membershipSearchDetailFailByNull() throws Exception {
+
+    // given
+    final String url = "/api/v1/memberships/123";
+    doThrow(new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND))
+        .when(membershipService)
+        .getMembership(123L, "12345");
+
+    // when
+    final ResultActions resultActions = mockMvc.perform(
+        MockMvcRequestBuilders.get(url)
+            .header(USER_ID_HEADER,"12345")
+    );
+
+    // then
+    resultActions.andExpect(status().isNotFound());
+  }
+
 }
