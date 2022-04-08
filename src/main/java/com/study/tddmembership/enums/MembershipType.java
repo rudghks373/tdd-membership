@@ -1,4 +1,4 @@
-package com.study.tddmembership.membership.type;
+package com.study.tddmembership.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

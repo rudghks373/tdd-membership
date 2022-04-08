@@ -1,6 +1,6 @@
 package com.study.tddmembership.membership.domain;
 
-import com.study.tddmembership.membership.type.MembershipType;
+import com.study.tddmembership.enums.MembershipType;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;

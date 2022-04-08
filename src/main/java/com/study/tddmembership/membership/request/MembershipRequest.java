@@ -1,6 +1,6 @@
 package com.study.tddmembership.membership.request;
 
-import com.study.tddmembership.membership.type.MembershipType;
+import com.study.tddmembership.enums.MembershipType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;

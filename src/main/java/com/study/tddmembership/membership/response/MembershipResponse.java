@@ -1,6 +1,6 @@
 package com.study.tddmembership.membership.response;
 
-import com.study.tddmembership.membership.type.MembershipType;
+import com.study.tddmembership.enums.MembershipType;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
