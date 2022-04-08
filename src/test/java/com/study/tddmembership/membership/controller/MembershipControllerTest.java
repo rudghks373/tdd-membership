@@ -3,7 +3,6 @@ package com.study.tddmembership.membership.controller;
 import com.google.gson.Gson;
 import com.study.tddmembership.common.GlobalExceptionHandler;
 import com.study.tddmembership.enums.MembershipType;
-import static com.study.tddmembership.membership.constants.MembershipConstants.USER_ID_HEADER;
 import com.study.tddmembership.membership.exception.MembershipErrorResult;
 import com.study.tddmembership.membership.exception.MembershipException;
 import com.study.tddmembership.membership.request.MembershipRequest;
@@ -13,7 +12,6 @@ import com.study.tddmembership.membership.service.MembershipService;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Stream;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,15 +21,18 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static com.study.tddmembership.membership.constants.MembershipConstants.USER_ID_HEADER;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class MembershipControllerTest {
@@ -118,17 +119,15 @@ class MembershipControllerTest {
     // given
     final String url = "/api/v1/memberships/123";
     doReturn(MembershipDetailResponse.builder().build())
-        .when(membershipService).getMembership(123L,"12345");
+        .when(membershipService)
+        .getMembership(123L, "12345");
 
     // then
-    final ResultActions resultActions = mockMvc.perform(
-        MockMvcRequestBuilders.get(url)
-            .header(USER_ID_HEADER,"12345")
-    );
+    final ResultActions resultActions =
+        mockMvc.perform(MockMvcRequestBuilders.get(url).header(USER_ID_HEADER, "12345"));
 
     // then
     resultActions.andExpect(status().isOk());
-
   }
 
   @ParameterizedTest
@@ -201,13 +200,10 @@ class MembershipControllerTest {
         .getMembership(123L, "12345");
 
     // when
-    final ResultActions resultActions = mockMvc.perform(
-        MockMvcRequestBuilders.get(url)
-            .header(USER_ID_HEADER,"12345")
-    );
+    final ResultActions resultActions =
+        mockMvc.perform(MockMvcRequestBuilders.get(url).header(USER_ID_HEADER, "12345"));
 
     // then
     resultActions.andExpect(status().isNotFound());
   }
-
 }
