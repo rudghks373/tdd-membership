@@ -2,14 +2,16 @@ package com.study.tddmembership.membership.controller;
 
 import com.google.gson.Gson;
 import com.study.tddmembership.common.GlobalExceptionHandler;
+import com.study.tddmembership.enums.MembershipType;
 import static com.study.tddmembership.membership.constants.MembershipConstants.USER_ID_HEADER;
 import com.study.tddmembership.membership.exception.MembershipErrorResult;
 import com.study.tddmembership.membership.exception.MembershipException;
 import com.study.tddmembership.membership.request.MembershipRequest;
+import com.study.tddmembership.membership.response.MembershipDetailResponse;
 import com.study.tddmembership.membership.response.MembershipResponse;
 import com.study.tddmembership.membership.service.MembershipService;
-import com.study.tddmembership.membership.type.MembershipType;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,6 +91,27 @@ class MembershipControllerTest {
     assertThat(response.getId()).isNotNull();
   }
 
+  @Test
+  @DisplayName("멤버십목록 조회성공")
+  void membershipListSearchSuccess() throws Exception {
+    // given
+    final String url = "/api/v1/memberships";
+    doReturn(
+            Arrays.asList(
+                MembershipDetailResponse.builder().build(),
+                MembershipDetailResponse.builder().build(),
+                MembershipDetailResponse.builder().build()))
+        .when(membershipService)
+        .getMembershipList("12345");
+
+    // when
+    final ResultActions resultActions =
+        mockMvc.perform(MockMvcRequestBuilders.get(url).header(USER_ID_HEADER, "12345"));
+
+    // then
+    resultActions.andExpect(status().isOk());
+  }
+
   @ParameterizedTest
   @MethodSource("invalidMembershipAddParameter")
   @DisplayName("멤버십등록실패 잘못된파라미터")
@@ -108,7 +131,6 @@ class MembershipControllerTest {
     // then
     resultActions.andExpect(status().isBadRequest());
   }
-  
 
   @Test
   @DisplayName("멤버십등록실패 MemberService 에러 Throw")
@@ -134,5 +156,18 @@ class MembershipControllerTest {
   private MembershipRequest membershipRequest(
       final Integer point, final MembershipType membershipType) {
     return MembershipRequest.builder().point(point).membershipType(membershipType).build();
+  }
+
+  @Test
+  @DisplayName("멤버십목록 조회실패 사용자식별값이 헤더에없음")
+  void membershipSearchFailByNullHeader() throws Exception {
+    // given
+    final String url = "/api/v1/memberships";
+
+    // when
+    final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(url));
+
+    // then
+    resultActions.andExpect(status().isBadRequest());
   }
 }

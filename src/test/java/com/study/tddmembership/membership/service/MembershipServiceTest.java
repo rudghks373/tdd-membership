@@ -1,11 +1,14 @@
 package com.study.tddmembership.membership.service;
 
+import com.study.tddmembership.enums.MembershipType;
 import com.study.tddmembership.membership.domain.Membership;
 import com.study.tddmembership.membership.exception.MembershipErrorResult;
 import com.study.tddmembership.membership.exception.MembershipException;
 import com.study.tddmembership.membership.repository.MembershipRepository;
+import com.study.tddmembership.membership.response.MembershipDetailResponse;
 import com.study.tddmembership.membership.response.MembershipResponse;
-import com.study.tddmembership.membership.type.MembershipType;
+import java.util.Arrays;
+import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
@@ -75,5 +78,24 @@ class MembershipServiceTest {
         .point(point)
         .membershipType(MembershipType.NAVER)
         .build();
+  }
+
+  @Test
+  @DisplayName("멤버십 목록조회")
+  void membershipListSearch() {
+    // given
+    doReturn(
+            Arrays.asList(
+                Membership.builder().build(),
+                Membership.builder().build(),
+                Membership.builder().build()))
+        .when(membershipRepository)
+        .findAllByUserId(userId);
+
+    // when
+    final List<MembershipDetailResponse> result = target.getMembershipList(userId);
+
+    // then
+    assertThat(result.size()).isEqualTo(3);
   }
 }
