@@ -8,6 +8,7 @@ import com.study.tddmembership.membership.repository.MembershipRepository;
 import com.study.tddmembership.membership.response.MembershipDetailResponse;
 import com.study.tddmembership.membership.response.MembershipResponse;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,12 +41,30 @@ public class MembershipService {
   public List<MembershipDetailResponse> getMembershipList(String userId) {
     List<Membership> membershipList = membershipRepository.findAllByUserId(userId);
     return membershipList.stream()
-        .map(v -> MembershipDetailResponse.builder()
-            .id(v.getId())
-            .membershipType(v.getMembershipType())
-            .point(v.getPoint())
-            .createdAt(v.getCreatedAt())
-            .build())
+        .map(
+            v ->
+                MembershipDetailResponse.builder()
+                    .id(v.getId())
+                    .membershipType(v.getMembershipType())
+                    .point(v.getPoint())
+                    .createdAt(v.getCreatedAt())
+                    .build())
         .collect(Collectors.toList());
+  }
+
+  public MembershipDetailResponse getMembership(Long membershipId, String userId) {
+    final Optional<Membership> optionalMembership = membershipRepository.findById(membershipId);
+    final Membership membership =
+        optionalMembership.orElseThrow(
+            () -> new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND));
+    if(!userId.equals(membership.getUserId())){
+      throw new MembershipException(MembershipErrorResult.NOT_MEMBERSHIP_OWNER);
+    }
+    return MembershipDetailResponse.builder()
+        .id(membership.getId())
+        .membershipType(membership.getMembershipType())
+        .point(membership.getPoint())
+        .createdAt(membership.getCreatedAt())
+        .build();
   }
 }
