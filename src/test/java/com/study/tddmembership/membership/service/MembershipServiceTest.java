@@ -145,4 +145,46 @@ class MembershipServiceTest {
     // then
     assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
   }
+
+  @Test
+  @DisplayName("멤버십삭제실패 존재하지않음")
+  void membershipDeleteFailByEmpty() {
+    // given
+    doReturn(Optional.empty()).when(membershipRepository).findById(membershipId);
+
+    // when
+    final MembershipException result = assertThrows(MembershipException.class,
+        () -> target.removeMembership(membershipId, userId));
+
+    // then
+    assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
+  }
+
+  @Test
+  @DisplayName("멤버십삭제실패 본인이아님")
+  void membershipDeleteFailByNotOwner() {
+    // given
+    final Membership membership = membership();
+    doReturn(Optional.of(membership)).when(membershipRepository).findById(membershipId);
+
+    // when
+    final MembershipException result = assertThrows(MembershipException.class,
+        () -> target.removeMembership(membershipId, "notowner"));
+
+    // then
+    assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.NOT_MEMBERSHIP_OWNER);
+  }
+
+  @Test
+  @DisplayName("멤버십삭제성공")
+  void membershipDeleteSuccess() {
+    // given
+    final Membership membership = membership();
+    doReturn(Optional.of(membership)).when(membershipRepository).findById(membershipId);
+
+    // when
+    target.removeMembership(membershipId, userId);
+
+    // then
+  }
 }
