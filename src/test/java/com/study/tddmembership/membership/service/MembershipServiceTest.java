@@ -1,12 +1,13 @@
 package com.study.tddmembership.membership.service;
 
 import com.study.tddmembership.enums.MembershipType;
-import com.study.tddmembership.membership.domain.Membership;
+import com.study.tddmembership.membership.entity.Membership;
 import com.study.tddmembership.membership.exception.MembershipErrorResult;
 import com.study.tddmembership.membership.exception.MembershipException;
 import com.study.tddmembership.membership.repository.MembershipRepository;
-import com.study.tddmembership.membership.response.MembershipDetailResponse;
-import com.study.tddmembership.membership.response.MembershipResponse;
+import com.study.tddmembership.membership.dto.MembershipDetailResponse;
+import com.study.tddmembership.membership.dto.MembershipResponse;
+import com.study.tddmembership.point.service.RatePointService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,8 @@ class MembershipServiceTest {
   @Mock private MembershipRepository membershipRepository;
 
   @Mock private MembershipService memberService;
+
+  @Mock private RatePointService ratePointService;
 
   @Test
   @DisplayName("멤버쉽등록성공")
@@ -186,5 +189,33 @@ class MembershipServiceTest {
     target.removeMembership(membershipId, userId);
 
     // then
+  }
+
+  @Test
+  @DisplayName("멤버십적립성공")
+  public void membershipCollectSuccess() {
+    // given
+    final Membership membership = membership();
+    doReturn(Optional.of(membership)).when(membershipRepository).findById(membershipId);
+
+    // when
+    target.accumulateMembershipPoint(membershipId, userId, 10000);
+
+    // then
+  }
+
+  @Test
+  @DisplayName("멤버십적립실패 존재하지않음")
+  void membershipCollectFailByEmpty(){
+    // given
+    doReturn(Optional.empty()).when(membershipRepository).findById(membershipId);
+
+    // when
+    final MembershipException result = assertThrows(
+        MembershipException.class, () -> target.accumulateMembershipPoint(membershipId,userId,10000));
+
+    // then
+    assertThat(result.getErrorResult()).isEqualTo(MembershipErrorResult.MEMBERSHIP_NOT_FOUND);
+
   }
 }

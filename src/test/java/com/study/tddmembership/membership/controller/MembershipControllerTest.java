@@ -5,9 +5,9 @@ import com.study.tddmembership.common.GlobalExceptionHandler;
 import com.study.tddmembership.enums.MembershipType;
 import com.study.tddmembership.membership.exception.MembershipErrorResult;
 import com.study.tddmembership.membership.exception.MembershipException;
-import com.study.tddmembership.membership.request.MembershipRequest;
-import com.study.tddmembership.membership.response.MembershipDetailResponse;
-import com.study.tddmembership.membership.response.MembershipResponse;
+import com.study.tddmembership.membership.dto.MembershipRequest;
+import com.study.tddmembership.membership.dto.MembershipDetailResponse;
+import com.study.tddmembership.membership.dto.MembershipResponse;
 import com.study.tddmembership.membership.service.MembershipService;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -176,6 +176,12 @@ class MembershipControllerTest {
     return MembershipRequest.builder().point(point).membershipType(membershipType).build();
   }
 
+  private MembershipRequest membershipRequest(final Integer point) {
+    return MembershipRequest.builder()
+        .point(point)
+        .build();
+  }
+
   @Test
   @DisplayName("멤버십목록 조회실패 사용자식별값이 헤더에없음")
   void membershipSearchFailByNullHeader() throws Exception {
@@ -237,4 +243,63 @@ class MembershipControllerTest {
     // then
     resultActions.andExpect(status().isNoContent());
   }
+
+  @Test
+  @DisplayName("멤버십적립성공")
+  void membershipCollectSuccess() throws Exception {
+
+    // given
+    final String url = "/api/v1/memberships/-1/accumulate";
+
+    // when
+    final ResultActions resultActions = mockMvc.perform(
+        MockMvcRequestBuilders.post(url)
+            .header(USER_ID_HEADER, "12345")
+            .content(gson.toJson(membershipRequest(10000)))
+            .contentType(MediaType.APPLICATION_JSON)
+    );
+
+    // then
+    resultActions.andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName("멤버십적립실패 사용자식별값이헤더에없음")
+  void membershipCollectFailByNotHeader() throws Exception {
+
+    // given
+    final String url = "/api/v1/memberships/-1/accumulate";
+
+    // when
+    final ResultActions resultActions = mockMvc.perform(
+        MockMvcRequestBuilders.post(url)
+            .content(gson.toJson(membershipRequest(10000)))
+            .contentType(MediaType.APPLICATION_JSON)
+    );
+
+    // then
+    resultActions.andExpect(status().isBadRequest());
+
+  }
+
+  @Test
+  @DisplayName("멤버십적립실패 포인트가음수")
+  void membershipCollectFailByPointMinus() throws Exception {
+
+    // given
+    final String url = "/api/v1/memberships/-1/accumulate";
+
+    // when
+    final ResultActions resultActions = mockMvc.perform(
+        MockMvcRequestBuilders.post(url)
+            .header(USER_ID_HEADER,"12345")
+            .content(gson.toJson(membershipRequest(-1,MembershipType.NAVER)))
+            .contentType(MediaType.APPLICATION_JSON)
+    );
+
+    // then
+    resultActions.andExpect(status().isBadRequest());
+  }
+
+
 }

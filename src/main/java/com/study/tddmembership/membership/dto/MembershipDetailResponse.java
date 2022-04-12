@@ -1,4 +1,4 @@
-package com.study.tddmembership.membership.response;
+package com.study.tddmembership.membership.dto;
 
 import com.study.tddmembership.enums.MembershipType;
 import java.time.LocalDateTime;
