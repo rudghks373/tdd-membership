@@ -1,15 +1,17 @@
 package com.study.tddmembership.membership.controller;
 
 import static com.study.tddmembership.membership.constants.MembershipConstants.USER_ID_HEADER;
-import com.study.tddmembership.membership.request.MembershipRequest;
-import com.study.tddmembership.membership.response.MembershipDetailResponse;
-import com.study.tddmembership.membership.response.MembershipResponse;
+import com.study.tddmembership.membership.dto.MembershipRequest;
+import com.study.tddmembership.membership.dto.MembershipDetailResponse;
+import com.study.tddmembership.membership.dto.MembershipResponse;
 import com.study.tddmembership.membership.service.MembershipService;
+import com.study.tddmembership.membership.validation.ValidationGroups.MembershipAccumulateMarker;
+import com.study.tddmembership.membership.validation.ValidationGroups.MembershipAddMarker;
 import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +29,8 @@ public class MembershipController {
   @PostMapping("/api/v1/memberships")
   public ResponseEntity<MembershipResponse> addMembership(
       @RequestHeader(USER_ID_HEADER) final String userId,
-      @RequestBody @Valid final MembershipRequest membershipRequest) {
+      @RequestBody @Validated(MembershipAddMarker.class)
+          final MembershipRequest membershipRequest) {
 
     final MembershipResponse membershipResponse =
         membershipService.addMembership(
@@ -52,6 +55,16 @@ public class MembershipController {
   public ResponseEntity<Void> removeMembership(
       @RequestHeader(USER_ID_HEADER) final String userId, @PathVariable final Long id) {
     membershipService.removeMembership(id, userId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/api/v1/memberships/{id}/accumulate")
+  public ResponseEntity<Void> accumulateMembershipPoint(
+      @RequestHeader(USER_ID_HEADER) final String userId,
+      @PathVariable final Long id,
+      @RequestBody @Validated(MembershipAccumulateMarker.class)
+          final MembershipRequest membershipRequest) {
+    membershipService.accumulateMembershipPoint(id, userId, membershipRequest.getPoint());
     return ResponseEntity.noContent().build();
   }
 }

@@ -1,4 +1,4 @@
-package com.study.tddmembership.membership.domain;
+package com.study.tddmembership.membership.entity;
 
 import com.study.tddmembership.enums.MembershipType;
 import java.time.LocalDateTime;
@@ -47,4 +47,9 @@ public class Membership {
   @UpdateTimestamp
   @Column(length = 20)
   private LocalDateTime updatedAt;
+
+  public void setPoint(Integer point) {
+    this.point = point;
+  }
+
 }

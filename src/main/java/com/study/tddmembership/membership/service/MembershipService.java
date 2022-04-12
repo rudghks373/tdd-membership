@@ -1,23 +1,26 @@
 package com.study.tddmembership.membership.service;
 
 import com.study.tddmembership.enums.MembershipType;
-import com.study.tddmembership.membership.domain.Membership;
+import com.study.tddmembership.membership.entity.Membership;
 import com.study.tddmembership.membership.exception.MembershipErrorResult;
 import com.study.tddmembership.membership.exception.MembershipException;
 import com.study.tddmembership.membership.repository.MembershipRepository;
-import com.study.tddmembership.membership.response.MembershipDetailResponse;
-import com.study.tddmembership.membership.response.MembershipResponse;
+import com.study.tddmembership.membership.dto.MembershipDetailResponse;
+import com.study.tddmembership.membership.dto.MembershipResponse;
+import com.study.tddmembership.point.service.PointService;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class MembershipService {
 
   private final MembershipRepository membershipRepository;
+  private final PointService ratePointService;
 
   public MembershipResponse addMembership(
       String userId, MembershipType membershipType, Integer point) {
@@ -78,5 +81,21 @@ public class MembershipService {
       throw new MembershipException(MembershipErrorResult.NOT_MEMBERSHIP_OWNER);
     }
     membershipRepository.deleteById(membershipId);
+  }
+
+  @Transactional
+  public void accumulateMembershipPoint(
+      final Long membershipId, final String userId, final int amount) {
+      final Optional<Membership> optionalMembership = membershipRepository.findById(membershipId);
+      final Membership membership = optionalMembership
+          .orElseThrow(()-> new MembershipException(MembershipErrorResult.MEMBERSHIP_NOT_FOUND));
+      if (!membership.getUserId().equals(userId)){
+        throw new MembershipException(MembershipErrorResult.NOT_MEMBERSHIP_OWNER);
+      }
+
+      final int additionalAmount = ratePointService.calculateAmount(amount);
+
+      //Entity
+      membership.setPoint(additionalAmount + membership.getPoint());
   }
 }
