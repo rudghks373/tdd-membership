@@ -55,7 +55,7 @@ public class MembershipController {
   public ResponseEntity<Void> removeMembership(
       @RequestHeader(USER_ID_HEADER) final String userId, @PathVariable final Long id) {
     membershipService.removeMembership(id, userId);
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping("/api/v1/memberships/{id}/accumulate")
@@ -65,6 +65,6 @@ public class MembershipController {
       @RequestBody @Validated(MembershipAccumulateMarker.class)
           final MembershipRequest membershipRequest) {
     membershipService.accumulateMembershipPoint(id, userId, membershipRequest.getPoint());
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.ok().build();
   }
 }

@@ -241,7 +241,7 @@ class MembershipControllerTest {
     );
 
     // then
-    resultActions.andExpect(status().isNoContent());
+    resultActions.andExpect(status().isOk());
   }
 
   @Test
@@ -260,7 +260,7 @@ class MembershipControllerTest {
     );
 
     // then
-    resultActions.andExpect(status().isNoContent());
+    resultActions.andExpect(status().isOk());
   }
 
   @Test

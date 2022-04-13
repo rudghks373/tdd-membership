@@ -48,7 +48,7 @@ public class Membership {
   @Column(length = 20)
   private LocalDateTime updatedAt;
 
-  public void setPoint(Integer point) {
+  public void updatePoint(final Integer point) {
     this.point = point;
   }
 

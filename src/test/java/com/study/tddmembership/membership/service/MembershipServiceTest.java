@@ -37,8 +37,6 @@ class MembershipServiceTest {
 
   @Mock private MembershipRepository membershipRepository;
 
-  @Mock private MembershipService memberService;
-
   @Mock private RatePointService ratePointService;
 
   @Test

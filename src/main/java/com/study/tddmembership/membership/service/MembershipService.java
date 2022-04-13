@@ -96,6 +96,6 @@ public class MembershipService {
       final int additionalAmount = ratePointService.calculateAmount(amount);
 
       //Entity
-      membership.setPoint(additionalAmount + membership.getPoint());
+      membership.updatePoint(additionalAmount + membership.getPoint());
   }
 }
